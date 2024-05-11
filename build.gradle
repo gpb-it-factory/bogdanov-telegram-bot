@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.gazprombank.payhub'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+wrapper {
+    gradleVersion("8.7")
+}
