@@ -3,6 +3,6 @@ telegram:
     token:
       #      Insert bot token. Example "1231312:jdhsjhfksjdfh"
     name:
-      #      Insert bot name. Example "1231312:jdhsjhfksjdfh"
+      #      Insert bot name. Example "my_test_bot"
 server:
   port: 8080
