@@ -15,7 +15,7 @@
 
 
 ### Структура
-- Frontend(telegram-bot на Kotlin)
+- Frontend(telegram-bot на Java)
 - Middle-слой (Java-сервис)
 - Backend (Java-сервис)
 
@@ -27,8 +27,8 @@
 - Gradle
 
 ### Запуск
-// TODO
-
+Возможна работа telegram bot в тестовом режиме.
+Перед запуском добавьте telegram token и name в [application.yml](telegram-bot/src/main/resources/application.yml)
 ### Пример использования
 ```plantuml
 @startUML
