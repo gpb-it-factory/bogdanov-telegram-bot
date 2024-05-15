@@ -27,7 +27,12 @@
 - Gradle
 
 ### Запуск
-// TODO
+Возможна работа telegram bot в тестовом режиме. 
+- Получить token и name https://t.me/BotFather
+- Добавьте telegram token и name в [application.yml](telegram-bot/src/main/resources/application.yml)
+- В корневой директории выполнить ./gradlew bootRun
+
+Протестировать можно по ссылке https://t.me/kim_test_01_bot
 
 ### Пример использования
 ```plantuml
