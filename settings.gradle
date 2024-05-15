@@ -1,1 +1,3 @@
-rootProject.name = 'boganov-telegram-bot'
+rootProject.name = 'bogdanov-telegram-bot'
+
+include 'telegram-bot'
