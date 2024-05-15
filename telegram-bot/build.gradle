@@ -10,6 +10,10 @@ plugins {
 group = 'ru.gazprombank.payhub'
 version = '0.0.1-SNAPSHOT'
 
+ext {
+    telegram = '6.8.0'
+}
+
 java {
     sourceCompatibility = '17'
 }
@@ -24,6 +28,11 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencies {
+    implementation("org.telegram:telegrambots-spring-boot-starter:${telegram}")
+    implementation("org.telegram:telegrambotsextensions:${telegram}")
 }
 
 tasks.withType(KotlinCompile) {
