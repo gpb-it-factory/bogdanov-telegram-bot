@@ -13,10 +13,9 @@ class TelegramBot(
     commands: Set<BotCommand>,
     @Value("\${telegram.bot.token}")
     token: String,
+    @Value("\${telegram.bot.name:}")
+    private val botName: String = "",
 ) : TelegramLongPollingCommandBot(token) {
-
-    @Value("\${telegram.bot.name}")
-    private val botName: String = ""
 
     init {
         registerAll(*commands.toTypedArray())
@@ -25,13 +24,15 @@ class TelegramBot(
     override fun getBotUsername(): String = botName
 
     override fun processNonCommandUpdate(update: Update) {
-        if (update.hasMessage()) {
-            val chatId = update.message.chatId.toString()
-            if (update.message.hasText()) {
-                execute(createMessage(chatId, "Текст пока не обрабатывается"))
-            } else {
-                execute(createMessage(chatId, "Я понимаю только команды!"))
-            }
+        if (update.message == null) {
+            return
         }
+
+        val chatId = update.message.chatId.toString()
+        if (update.message.hasText()) {
+            execute(createMessage(chatId, "Текст пока не обрабатывается"))
+            return
+        }
+        execute(createMessage(chatId, "Я понимаю только команды!"))
     }
 }
