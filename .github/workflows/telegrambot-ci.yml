@@ -17,8 +17,10 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Build with Gradle
-        uses: gradle/actions@v3.3.2
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3.1.0
+        with:
+            gradle-version: 8.7
 
       - name: Setting executable permissions for gradlew
         run: chmod +x ./gradlew
