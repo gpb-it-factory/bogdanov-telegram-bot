@@ -6,10 +6,10 @@ on:
     types:
       - opened
       - reopened
-    push:
-      branches:
-        - trunk
-        - feature/*
+  push:
+    branches:
+      - trunk
+      - feature/*
 jobs:
   build:
     runs-on: ubuntu-latest
