@@ -13,7 +13,7 @@ class TelegramBot(
     commands: Set<BotCommand>,
     @Value("\${telegram.bot.token}")
     token: String,
-    @Value("\${telegram.bot.name:}")
+    @Value("\${telegram.bot.name}")
     private val botName: String,
 ) : TelegramLongPollingCommandBot(token) {
 
