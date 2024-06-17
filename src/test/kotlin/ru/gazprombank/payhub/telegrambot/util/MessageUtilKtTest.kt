@@ -8,7 +8,6 @@ import ru.gazprombank.payhub.telegrambot.util.*
 
 class MessageUtilKtTest {
     @Test
-    @DisplayName("Корректность созданного SendMessage")
     fun `testCreateMessage should create SendMessage with correct parameters`(){
         val chatId = "12345"
         val text = "Test message"
