@@ -32,6 +32,8 @@ class TelegramBotTest {
         TelegramBot telegramBot = new TelegramBot(commands, testToken, testBotName);
 
         assertEquals(testBotName, telegramBot.getBotUsername());
+        assertEquals(testToken, telegramBot.getBotToken());
+
     }
 
     @Test
