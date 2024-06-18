@@ -24,12 +24,13 @@ class RegisterCommandTest {
     @Test
     @DisplayName("Проверяем передачу UserDto в клиент")
     void testSendUserDto() {
-        prepareUserData(false, "Регистрация успешна!");
-
+        prepareUserData(false);
+        String expectedResponse = "Регистрация успешна!";
+        when(userClient.create(any())).thenReturn(expectedResponse);
         command.execute(absSender, user, chat, new String[]{});
 
         ArgumentCaptor<CreateUserRequestDto> requestCaptor = ArgumentCaptor.forClass(CreateUserRequestDto.class);
-        verify(userClient, times(1)).create(requestCaptor.capture());
+        verify(userClient).create(requestCaptor.capture());
         CreateUserRequestDto actualRequest = requestCaptor.getValue();
         assertEquals(user.getId(), actualRequest.getUserId());
         assertEquals(user.getUserName(), actualRequest.getUserName());
@@ -39,7 +40,8 @@ class RegisterCommandTest {
     @DisplayName("Проверяем возвращаемое сообщение")
     void testResponseMessage() throws Exception {
         String expectedResponse = "Регистрация успешна!";
-        prepareUserData(false, expectedResponse);
+        when(userClient.create(any())).thenReturn(expectedResponse);
+        prepareUserData(false);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -51,10 +53,10 @@ class RegisterCommandTest {
     }
 
     @Test
-    @DisplayName("Регистрация бота ")
+    @DisplayName("Регистрация бота")
     void testBotRegistration() throws Exception {
         String expectedResponse = "Вы не можете зарегистрировать бота";
-        prepareUserData(true, expectedResponse);
+        prepareUserData(true);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -63,14 +65,15 @@ class RegisterCommandTest {
         SendMessage actualMessage = messageCaptor.getValue();
         assertEquals(chat.getId().toString(), actualMessage.getChatId());
         assertEquals(expectedResponse, actualMessage.getText());
+
+        verify(userClient, never()).create(any(CreateUserRequestDto.class));
     }
 
-    private void prepareUserData(boolean isBot, String expectedResponse) {
+    private void prepareUserData(boolean isBot) {
         user.setId(12345L);
         user.setUserName("testUserName");
         user.setIsBot(isBot);
         chat.setId(54321L);
-        when(userClient.create(any())).thenReturn(expectedResponse);
     }
 }
 
