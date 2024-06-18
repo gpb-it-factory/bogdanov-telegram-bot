@@ -16,7 +16,7 @@ interface AccountClient {
     ): String
 
     @GetMapping("/api/v1/users/{id}/accounts")
-    fun get(
+    fun find(
         @PathVariable("id") userId: Long
     ): String
 }
