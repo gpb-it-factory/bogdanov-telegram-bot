@@ -43,6 +43,6 @@ class TransferCommand(
     }
 
     private fun buildCreateTransferRequestDto(user: User, arguments: Array<out String>): CreateTransferRequestDto {
-        return CreateTransferRequestDto(user.id, arguments[0], arguments[1])
+        return CreateTransferRequestDto(user.userName, arguments[0], arguments[1])
     }
 }
