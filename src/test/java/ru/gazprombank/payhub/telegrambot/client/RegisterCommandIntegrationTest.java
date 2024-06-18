@@ -27,7 +27,7 @@ class RegisterCommandIntegrationTest {
                 WireMock.post(WireMock.urlEqualTo("/api/v1/users"))
                         .willReturn(WireMock.aResponse().withStatus(200).withBody("Регистрация успешна!"))
         );
-        prepareUserData(false, "Регистрация успешна!");
+        prepareUserData(false);
 
         registerCommand.execute(absSender, user, chat, new String[]{});
 
@@ -37,7 +37,7 @@ class RegisterCommandIntegrationTest {
         );
     }
 
-    private void prepareUserData(boolean isBot, String expectedResponse) {
+    private void prepareUserData(boolean isBot) {
         user.setId(12345L);
         user.setUserName("testUserName");
         user.setIsBot(isBot);
