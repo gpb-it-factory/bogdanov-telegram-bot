@@ -18,15 +18,18 @@ class RegisterCommandTest {
     private final UserClient userClient = mock(UserClient.class);
     private final RegisterCommand command = new RegisterCommand(userClient);
     private final AbsSender absSender = spy(AbsSender.class);
-    private final User user = new User();
-    private final Chat chat = new Chat();
 
     @Test
     @DisplayName("Проверяем передачу UserDto в клиент")
     void testSendUserDto() {
-        prepareUserData(false);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
         String expectedResponse = "Регистрация успешна!";
         when(userClient.create(any())).thenReturn(expectedResponse);
+
         command.execute(absSender, user, chat, new String[]{});
 
         ArgumentCaptor<CreateUserRequestDto> requestCaptor = ArgumentCaptor.forClass(CreateUserRequestDto.class);
@@ -39,9 +42,13 @@ class RegisterCommandTest {
     @Test
     @DisplayName("Проверяем возвращаемое сообщение")
     void testResponseMessage() throws Exception {
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
         String expectedResponse = "Регистрация успешна!";
         when(userClient.create(any())).thenReturn(expectedResponse);
-        prepareUserData(false);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -56,7 +63,11 @@ class RegisterCommandTest {
     @DisplayName("Регистрация бота")
     void testBotRegistration() throws Exception {
         String expectedResponse = "Вы не можете зарегистрировать бота";
-        prepareUserData(true);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = true;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -69,11 +80,18 @@ class RegisterCommandTest {
         verify(userClient, never()).create(any(CreateUserRequestDto.class));
     }
 
-    private void prepareUserData(boolean isBot) {
-        user.setId(12345L);
-        user.setUserName("testUserName");
+    private Chat createChat(Long chatId) {
+        final Chat chat = new Chat();
+        chat.setId(chatId);
+        return chat;
+    }
+
+    private User createTelegramUser(Long userId, String userName, boolean isBot) {
+        final User user = new User();
+        user.setId(userId);
+        user.setUserName(userName);
         user.setIsBot(isBot);
-        chat.setId(54321L);
+        return user;
     }
 }
 

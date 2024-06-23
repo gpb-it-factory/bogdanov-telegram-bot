@@ -25,6 +25,7 @@ public class StartCommandTest {
         String expectedResponse = "Добро пожаловать!";
         final User user = new User();
         final Chat chat = new Chat();
+        chat.setId(12345L);
 
         startCommand.execute(absSender, user, chat, new String[]{});
 
