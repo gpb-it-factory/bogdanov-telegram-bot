@@ -12,18 +12,22 @@ import ru.gazprombank.payhub.telegrambot.dto.CreateAccountRequestDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 public class CreateAccountTest {
     private final AccountClient accountClient = mock(AccountClient.class);
     private final CreateAccountCommand command = new CreateAccountCommand(accountClient);
     private final AbsSender absSender = spy(AbsSender.class);
-    private final User user = new User();
-    private final Chat chat = new Chat();
 
     @Test
     void testBotCreateAccount() throws TelegramApiException {
         String expectedMessage = "Вы не можете зарегистрировать бота";
-        prepareUserData(true);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = true;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -34,12 +38,5 @@ public class CreateAccountTest {
         assertEquals(expectedMessage, actualMessage.getText());
 
         verify(accountClient, never()).create(anyLong(), any(CreateAccountRequestDto.class));
-    }
-
-    private void prepareUserData(boolean isBot) {
-        user.setId(12345L);
-        user.setUserName("testUserName");
-        user.setIsBot(isBot);
-        chat.setId(54321L);
     }
 }

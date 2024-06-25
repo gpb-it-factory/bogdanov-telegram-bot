@@ -14,18 +14,22 @@ import ru.gazprombank.payhub.telegrambot.dto.CreateTransferRequestDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 public class TransferCommandTest {
     private final TransferClient transferClient = mock(TransferClient.class);
     private final TransferCommand command = new TransferCommand(transferClient);
     private final AbsSender absSender = spy(AbsSender.class);
-    private final User user = new User();
-    private final Chat chat = new Chat();
 
     @Test
     void testBotCreateAccount() throws TelegramApiException {
         String expectedMessage = "Боты не поддерживаются";
-        prepareUserData(true);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = true;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{"name", "100.00"});
 
@@ -46,7 +50,11 @@ public class TransferCommandTest {
                 " /transfer [Имя получателя в телеграмме] [Сумма перевода]\n" +
                 "   Пример:\n" +
                 " /transfer Popov 100```";
-        prepareUserData(false);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{"100.00"});
 
@@ -67,7 +75,11 @@ public class TransferCommandTest {
                 " /transfer [Имя получателя в телеграмме] [Сумма перевода]\n" +
                 "   Пример:\n" +
                 " /transfer Popov 100```";
-        prepareUserData(false);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{"name"});
 
@@ -88,7 +100,11 @@ public class TransferCommandTest {
                 " /transfer [Имя получателя в телеграмме] [Сумма перевода]\n" +
                 "   Пример:\n" +
                 " /transfer Popov 100```";
-        prepareUserData(false);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -109,7 +125,11 @@ public class TransferCommandTest {
                 " /transfer [Имя получателя в телеграмме] [Сумма перевода]\n" +
                 "   Пример:\n" +
                 " /transfer Popov 100```";
-        prepareUserData(false);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{"name", "name", "100"});
 
@@ -120,12 +140,5 @@ public class TransferCommandTest {
         assertEquals(expectedMessage, actualMessage.getText());
 
         verify(transferClient, never()).create(any(CreateTransferRequestDto.class));
-    }
-
-    private void prepareUserData(boolean isBot) {
-        user.setId(12345L);
-        user.setUserName("testUserName");
-        user.setIsBot(isBot);
-        chat.setId(54321L);
     }
 }

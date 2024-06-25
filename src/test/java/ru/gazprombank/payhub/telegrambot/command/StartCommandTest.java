@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.mockito.Mockito.*;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
 
 public class StartCommandTest {
     private final StartCommand startCommand = new StartCommand();
@@ -24,8 +25,7 @@ public class StartCommandTest {
     void testResponseMessage() throws TelegramApiException {
         String expectedResponse = "Добро пожаловать!";
         final User user = new User();
-        final Chat chat = new Chat();
-        chat.setId(12345L);
+        final Chat chat = createChat(54321L);
 
         startCommand.execute(absSender, user, chat, new String[]{});
 

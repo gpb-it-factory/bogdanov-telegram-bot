@@ -13,6 +13,8 @@ import ru.gazprombank.payhub.telegrambot.dto.CreateUserRequestDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 class RegisterCommandTest {
     private final UserClient userClient = mock(UserClient.class);
@@ -78,20 +80,6 @@ class RegisterCommandTest {
         assertEquals(expectedResponse, actualMessage.getText());
 
         verify(userClient, never()).create(any(CreateUserRequestDto.class));
-    }
-
-    private Chat createChat(Long chatId) {
-        final Chat chat = new Chat();
-        chat.setId(chatId);
-        return chat;
-    }
-
-    private User createTelegramUser(Long userId, String userName, boolean isBot) {
-        final User user = new User();
-        user.setId(userId);
-        user.setUserName(userName);
-        user.setIsBot(isBot);
-        return user;
     }
 }
 

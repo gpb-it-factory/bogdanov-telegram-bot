@@ -14,18 +14,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 public class CurrentBalanceCommandTest {
     private final AccountClient accountClient = mock(AccountClient.class);
     private final CurrentBalanceCommand command = new CurrentBalanceCommand(accountClient);
     private final AbsSender absSender = spy(AbsSender.class);
-    private final User user = new User();
-    private final Chat chat = new Chat();
 
     @Test
     void testBotFindBalance() throws TelegramApiException {
         String expectedMessage = "Боты не поддерживаются";
-        prepareUserData(true);
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = true;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -36,12 +40,5 @@ public class CurrentBalanceCommandTest {
         assertEquals(expectedMessage, actualMessage.getText());
 
         verify(accountClient, never()).create(anyLong(), any(CreateAccountRequestDto.class));
-    }
-
-    private void prepareUserData(boolean isBot) {
-        user.setId(12345L);
-        user.setUserName("testUserName");
-        user.setIsBot(isBot);
-        chat.setId(54321L);
     }
 }
