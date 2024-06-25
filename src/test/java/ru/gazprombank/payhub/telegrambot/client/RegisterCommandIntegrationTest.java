@@ -12,9 +12,7 @@ import ru.gazprombank.payhub.telegrambot.command.RegisterCommand;
 
 import static org.mockito.Mockito.mock;
 
-@SpringBootTest
-@AutoConfigureWireMock(port = 9090)
-class RegisterCommandIntegrationTest {
+public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private RegisterCommand registerCommand;
     private final AbsSender absSender = mock(AbsSender.class);

@@ -17,9 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@AutoConfigureWireMock(port = 9090)
-public class CurrentBalanceCommandIntegrationTest {
+public class CurrentBalanceCommandIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private CurrentBalanceCommand command;
     private final User user = new User();
