@@ -82,4 +82,3 @@ class RegisterCommandTest {
         verify(userClient, never()).create(any(CreateUserRequestDto.class));
     }
 }
-
