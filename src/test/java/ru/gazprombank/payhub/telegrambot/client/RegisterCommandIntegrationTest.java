@@ -43,4 +43,3 @@ public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
         );
     }
 }
-
