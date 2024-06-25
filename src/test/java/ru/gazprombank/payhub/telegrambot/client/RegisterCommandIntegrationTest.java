@@ -3,14 +3,14 @@ package ru.gazprombank.payhub.telegrambot.client;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.api.objects.User;
 import ru.gazprombank.payhub.telegrambot.command.RegisterCommand;
 
 import static org.mockito.Mockito.mock;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
+import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
     @Autowired
@@ -41,20 +41,6 @@ public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
                                 userId,
                                 userName)))
         );
-    }
-
-    private Chat createChat(Long chatId) {
-        final Chat chat = new Chat();
-        chat.setId(chatId);
-        return chat;
-    }
-
-    private User createTelegramUser(Long userId, String userName, boolean isBot) {
-        final User user = new User();
-        user.setId(userId);
-        user.setUserName(userName);
-        user.setIsBot(isBot);
-        return user;
     }
 }
 
