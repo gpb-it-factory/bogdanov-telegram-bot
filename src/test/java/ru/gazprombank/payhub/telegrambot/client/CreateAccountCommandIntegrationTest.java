@@ -53,4 +53,36 @@ public class CreateAccountCommandIntegrationTest extends AbstractIntegrationTest
         SendMessage capturedMessage = messageCaptor.getValue();
         assertEquals(responseMessage, capturedMessage.getText());
     }
+
+    @Test
+    void testSuccessfulCreateAccountWithoutAccountName() throws TelegramApiException {
+        final String responseMessage = "Successful";
+        final String accountName = "";
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = false;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
+        WireMock.stubFor(
+                WireMock.post(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
+                        .willReturn(WireMock.aResponse().withStatus(200).withBody(responseMessage))
+        );
+
+        ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
+
+        command.execute(absSender, user, chat, new String[]{accountName});
+
+        WireMock.verify(
+                WireMock.postRequestedFor(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
+                        .withRequestBody(WireMock.equalToJson(String.format(
+                                """
+                                        {"accountName":"%s"}
+                                        """,
+                                accountName)))
+        );
+
+        verify(absSender).execute(messageCaptor.capture());
+        SendMessage capturedMessage = messageCaptor.getValue();
+        assertEquals(responseMessage, capturedMessage.getText());
+    }
 }
