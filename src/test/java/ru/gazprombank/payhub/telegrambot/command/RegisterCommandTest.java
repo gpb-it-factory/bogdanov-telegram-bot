@@ -18,6 +18,7 @@ import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
 import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 class RegisterCommandTest {
+
     private final UserClient userClient = mock(UserClient.class);
     private final RegisterCommand command = new RegisterCommand(userClient);
     private final AbsSender absSender = spy(AbsSender.class);
@@ -30,16 +31,13 @@ class RegisterCommandTest {
         final boolean isBot = false;
         final User user = createTelegramUser(userId, userName, isBot);
         final Chat chat = createChat(54321L);
-        String expectedResponse = "Регистрация успешна!";
-        when(userClient.create(any())).thenReturn(new ResponseMessage(expectedResponse));
+        final String expectedResponse = "Регистрация успешна!";
 
-        command.execute(absSender, user, chat, new String[]{});
+        configureStubForUserClient(expectedResponse);
 
-        ArgumentCaptor<CreateUserRequestDto> requestCaptor = ArgumentCaptor.forClass(CreateUserRequestDto.class);
-        verify(userClient).create(requestCaptor.capture());
-        CreateUserRequestDto actualRequest = requestCaptor.getValue();
-        assertEquals(user.getId(), actualRequest.getUserId());
-        assertEquals(user.getUserName(), actualRequest.getUserName());
+        executeCommand(user, chat);
+
+        assertUserDtoSentToClient(user);
     }
 
     @Test
@@ -50,12 +48,49 @@ class RegisterCommandTest {
         final boolean isBot = false;
         final User user = createTelegramUser(userId, userName, isBot);
         final Chat chat = createChat(54321L);
-        String expectedResponse = "Регистрация успешна!";
-        ResponseMessage response = new ResponseMessage(expectedResponse);
-        when(userClient.create(any())).thenReturn(response);
+        final String expectedResponse = "Регистрация успешна!";
+        final ResponseMessage response = new ResponseMessage(expectedResponse);
 
+        configureStubForUserClient(expectedResponse);
+
+        executeCommand(user, chat);
+
+        assertResponseMessage(chat, expectedResponse);
+    }
+
+    @Test
+    @DisplayName("Регистрация бота")
+    void testBotRegistration() throws Exception {
+        final String expectedResponse = "Вы не можете зарегистрировать бота";
+        final Long userId = 12345L;
+        final String userName = "testUserName";
+        final boolean isBot = true;
+        final User user = createTelegramUser(userId, userName, isBot);
+        final Chat chat = createChat(54321L);
+
+        executeCommand(user, chat);
+
+        assertResponseMessage(chat, expectedResponse);
+        verifyNoUserCreation();
+    }
+
+    private void configureStubForUserClient(final String expectedResponse) {
+        when(userClient.create(any())).thenReturn(new ResponseMessage(expectedResponse));
+    }
+
+    private void executeCommand(final User user, final Chat chat) {
         command.execute(absSender, user, chat, new String[]{});
+    }
 
+    private void assertUserDtoSentToClient(final User user) {
+        ArgumentCaptor<CreateUserRequestDto> requestCaptor = ArgumentCaptor.forClass(CreateUserRequestDto.class);
+        verify(userClient).create(requestCaptor.capture());
+        CreateUserRequestDto actualRequest = requestCaptor.getValue();
+        assertEquals(user.getId(), actualRequest.getUserId());
+        assertEquals(user.getUserName(), actualRequest.getUserName());
+    }
+
+    private void assertResponseMessage(final Chat chat, final String expectedResponse) throws Exception {
         ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
         verify(absSender).execute(messageCaptor.capture());
         SendMessage actualMessage = messageCaptor.getValue();
@@ -63,24 +98,7 @@ class RegisterCommandTest {
         assertEquals(expectedResponse, actualMessage.getText());
     }
 
-    @Test
-    @DisplayName("Регистрация бота")
-    void testBotRegistration() throws Exception {
-        String expectedResponse = "Вы не можете зарегистрировать бота";
-        final Long userId = 12345L;
-        final String userName = "testUserName";
-        final boolean isBot = true;
-        final User user = createTelegramUser(userId, userName, isBot);
-        final Chat chat = createChat(54321L);
-
-        command.execute(absSender, user, chat, new String[]{});
-
-        ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
-        verify(absSender).execute(messageCaptor.capture());
-        SendMessage actualMessage = messageCaptor.getValue();
-        assertEquals(chat.getId().toString(), actualMessage.getChatId());
-        assertEquals(expectedResponse, actualMessage.getText());
-
+    private void verifyNoUserCreation() {
         verify(userClient, never()).create(any(CreateUserRequestDto.class));
     }
 }

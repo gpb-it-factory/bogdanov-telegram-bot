@@ -1,6 +1,7 @@
 package ru.gazprombank.payhub.telegrambot.client;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,14 @@ import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
 import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
 public class CurrentBalanceCommandIntegrationTest extends AbstractIntegrationTest {
+
     @Autowired
     private CurrentBalanceCommand command;
+
     private final AbsSender absSender = spy(AbsSender.class);
 
     @Test
+    @DisplayName("Успешное получение текущего баланса")
     void testSuccessfulFindBalance() throws TelegramApiException {
         final String responseMessage = "Successful";
         final Long userId = 12345L;
@@ -30,20 +34,33 @@ public class CurrentBalanceCommandIntegrationTest extends AbstractIntegrationTes
         final boolean isBot = false;
         final User user = createTelegramUser(userId, userName, isBot);
         final Chat chat = createChat(54321L);
+
+        configureStubForFindBalance(userId, responseMessage);
+
+        ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
+
+        command.execute(absSender, user, chat, new String[]{});
+
+        assertFindBalanceRequest(userId);
+        assertFindBalanceResponse(messageCaptor, responseMessage);
+    }
+
+    private void configureStubForFindBalance(final Long userId, final String responseMessage) {
         WireMock.stubFor(
                 WireMock.get(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
                         .willReturn(WireMock.aResponse().withStatus(200)
                                 .withHeader("Content-Type", "application/json")
                                 .withBody("{\"message\": \"" + responseMessage + "\"}"))
         );
-        ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
+    }
 
-        command.execute(absSender, user, chat, new String[]{});
-
+    private void assertFindBalanceRequest(final Long userId) {
         WireMock.verify(
                 WireMock.getRequestedFor(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
         );
+    }
 
+    private void assertFindBalanceResponse(ArgumentCaptor<SendMessage> messageCaptor, final String responseMessage) throws TelegramApiException {
         verify(absSender).execute(messageCaptor.capture());
         SendMessage capturedMessage = messageCaptor.getValue();
         assertEquals(responseMessage, capturedMessage.getText());
