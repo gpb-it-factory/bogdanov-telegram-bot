@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.bots.AbsSender
 import ru.gazprombank.payhub.telegrambot.client.AccountClient
 import ru.gazprombank.payhub.telegrambot.dto.CreateAccountRequestDto
+import ru.gazprombank.payhub.telegrambot.dto.ResponseMessage
 import ru.gazprombank.payhub.telegrambot.util.createMessage
 
 @Component
@@ -19,9 +20,9 @@ class CreateAccountCommand(
             absSender.execute(createMessage(chat.id.toString(), "Вы не можете зарегистрировать бота"))
             return
         }
-        
+
         val response: String = try {
-            accountClient.create(user.id, CreateAccountRequestDto(arguments.joinToString(" ")))
+            accountClient.create(user.id, CreateAccountRequestDto(arguments.joinToString(" "))).message
         } catch (e: RetryableException) {
             e.printStackTrace()
             "Произошла ошибка. Попробуйте позже."

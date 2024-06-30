@@ -23,7 +23,7 @@ class RegisterCommand(
         }
 
         val response: String = try {
-            userClient.create(buildUserDto(user))
+            userClient.create(buildUserDto(user)).message
         } catch (e: RetryableException) {
             e.printStackTrace()
             "Произошла ошибка. Попробуйте позже."
