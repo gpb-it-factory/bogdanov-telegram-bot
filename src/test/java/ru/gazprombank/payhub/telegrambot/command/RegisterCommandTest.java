@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import ru.gazprombank.payhub.telegrambot.client.UserClient;
 import ru.gazprombank.payhub.telegrambot.dto.CreateUserRequestDto;
+import ru.gazprombank.payhub.telegrambot.dto.ResponseMessage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,7 @@ class RegisterCommandTest {
         final User user = createTelegramUser(userId, userName, isBot);
         final Chat chat = createChat(54321L);
         String expectedResponse = "Регистрация успешна!";
-        when(userClient.create(any())).thenReturn(expectedResponse);
+        when(userClient.create(any())).thenReturn(new ResponseMessage(expectedResponse));
 
         command.execute(absSender, user, chat, new String[]{});
 
@@ -50,7 +51,8 @@ class RegisterCommandTest {
         final User user = createTelegramUser(userId, userName, isBot);
         final Chat chat = createChat(54321L);
         String expectedResponse = "Регистрация успешна!";
-        when(userClient.create(any())).thenReturn(expectedResponse);
+        ResponseMessage response = new ResponseMessage(expectedResponse);
+        when(userClient.create(any())).thenReturn(response);
 
         command.execute(absSender, user, chat, new String[]{});
 

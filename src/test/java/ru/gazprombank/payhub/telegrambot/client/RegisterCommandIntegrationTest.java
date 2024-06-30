@@ -19,6 +19,7 @@ public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void testSuccessfulRegistration() {
+        final String responseMessage = "Successful";
         final Long userId = 12345L;
         final String userName = "testUserName";
         final boolean isBot = false;
@@ -26,8 +27,10 @@ public class RegisterCommandIntegrationTest extends AbstractIntegrationTest {
         final Chat chat = createChat(54321L);
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/api/v1/users"))
-                        .willReturn(WireMock.aResponse().withStatus(200).withBody("Регистрация успешна!"))
-        );
+                        .willReturn(WireMock.aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("{\"message\": \"" + responseMessage + "\"}")));
+
 
         registerCommand.execute(absSender, user, chat, new String[]{});
 

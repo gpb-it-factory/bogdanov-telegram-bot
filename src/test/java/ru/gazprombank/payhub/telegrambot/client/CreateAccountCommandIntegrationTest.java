@@ -33,7 +33,9 @@ public class CreateAccountCommandIntegrationTest extends AbstractIntegrationTest
         final Chat chat = createChat(54321L);
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
-                        .willReturn(WireMock.aResponse().withStatus(200).withBody(responseMessage))
+                        .willReturn(WireMock.aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("{\"message\": \"" + responseMessage + "\"}"))
         );
 
         ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
@@ -42,11 +44,12 @@ public class CreateAccountCommandIntegrationTest extends AbstractIntegrationTest
 
         WireMock.verify(
                 WireMock.postRequestedFor(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
-                        .withRequestBody(WireMock.equalToJson(String.format(
-                                """
-                                        {"accountName":"%s"}
-                                        """,
-                                accountName)))
+                        .withRequestBody(WireMock.equalToJson(
+                                String.format(
+                                        """
+                                                {"accountName":"%s"}
+                                                """,
+                                        accountName)))
         );
 
         verify(absSender).execute(messageCaptor.capture());
@@ -65,7 +68,9 @@ public class CreateAccountCommandIntegrationTest extends AbstractIntegrationTest
         final Chat chat = createChat(54321L);
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
-                        .willReturn(WireMock.aResponse().withStatus(200).withBody(responseMessage))
+                        .willReturn(WireMock.aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("{\"message\": \"" + responseMessage + "\"}"))
         );
 
         ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
@@ -74,11 +79,9 @@ public class CreateAccountCommandIntegrationTest extends AbstractIntegrationTest
 
         WireMock.verify(
                 WireMock.postRequestedFor(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
-                        .withRequestBody(WireMock.equalToJson(String.format(
-                                """
-                                        {"accountName":"%s"}
-                                        """,
-                                accountName)))
+                        .withRequestBody(WireMock.equalToJson(
+                                String.format("""  
+                                        {"accountName":"%s"}""", accountName)))
         );
 
         verify(absSender).execute(messageCaptor.capture());

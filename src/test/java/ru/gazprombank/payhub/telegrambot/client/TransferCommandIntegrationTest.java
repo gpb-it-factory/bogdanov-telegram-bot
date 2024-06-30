@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createChat;
 import static ru.gazprombank.payhub.telegrambot.util.TestDataUtils.createTelegramUser;
 
-public class TransferCommandIntegrationTest extends AbstractIntegrationTest{
+public class TransferCommandIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private TransferCommand command;
     private final AbsSender absSender = spy(AbsSender.class);
@@ -34,7 +34,9 @@ public class TransferCommandIntegrationTest extends AbstractIntegrationTest{
         final Chat chat = createChat(54321L);
         WireMock.stubFor(
                 WireMock.post(WireMock.urlEqualTo("/api/v1/transfers"))
-                        .willReturn(WireMock.aResponse().withStatus(200).withBody(responseMessage))
+                        .willReturn(WireMock.aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("{\"message\": \"" + responseMessage + "\"}"))
         );
         ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
 

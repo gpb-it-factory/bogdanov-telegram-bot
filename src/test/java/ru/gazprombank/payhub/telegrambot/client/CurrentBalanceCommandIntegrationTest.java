@@ -32,7 +32,9 @@ public class CurrentBalanceCommandIntegrationTest extends AbstractIntegrationTes
         final Chat chat = createChat(54321L);
         WireMock.stubFor(
                 WireMock.get(WireMock.urlEqualTo(String.format("/api/v1/users/%d/accounts", userId)))
-                        .willReturn(WireMock.aResponse().withStatus(200).withBody(responseMessage))
+                        .willReturn(WireMock.aResponse().withStatus(200)
+                                .withHeader("Content-Type", "application/json")
+                                .withBody("{\"message\": \"" + responseMessage + "\"}"))
         );
         ArgumentCaptor<SendMessage> messageCaptor = ArgumentCaptor.forClass(SendMessage.class);
 
