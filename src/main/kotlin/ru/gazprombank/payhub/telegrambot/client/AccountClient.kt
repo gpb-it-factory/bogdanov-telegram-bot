@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import ru.gazprombank.payhub.telegrambot.dto.CreateAccountRequestDto
+import ru.gazprombank.payhub.telegrambot.dto.ResponseMessage
 
 @FeignClient(name = "accountClient", url = "\${middle-server.url}")
 interface AccountClient {
@@ -13,10 +14,10 @@ interface AccountClient {
     fun create(
         @PathVariable("id") userId: Long,
         @RequestBody createAccountRequestDto: CreateAccountRequestDto
-    ): String
+    ): ResponseMessage
 
     @GetMapping("/api/v1/users/{id}/accounts")
     fun find(
         @PathVariable("id") userId: Long
-    ): String
+    ): ResponseMessage
 }

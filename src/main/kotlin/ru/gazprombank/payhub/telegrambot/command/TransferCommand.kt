@@ -33,7 +33,7 @@ class TransferCommand(
             return
         }
         val response: String = try {
-            transferClient.create(buildCreateTransferRequestDto(user, arguments))
+            transferClient.create(buildCreateTransferRequestDto(user, arguments)).message
         } catch (e: RetryableException) {
             e.printStackTrace()
             "Произошла ошибка. Попробуйте позже."
